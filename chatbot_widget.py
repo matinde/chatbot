@@ -16,7 +16,7 @@ class Chat(ft.UserControl):
         #heading
         self.heading = ft.Text(value="ChatGPT Chatbot", size=24)
         self.text_input = ft.TextField(hint_text="Enter your prompt", expand=True, multiline=True)
-        self.output_column = ft.Column(width=800)
+        self.output_column = ft.Column()
         
         self.scroll=True
         
@@ -50,24 +50,25 @@ class Chat(ft.UserControl):
         # Get the output text from the API response
         self.output = completion.choices[0].message.content
         
-        result = Output(self.output, self.text_input.value)
+        result = Output(self.output, self.text_input.value, self.outputDelete)
         self.output_column.controls.append(result)
         self.text_input.value = "" # clear the text field
         self.update() # update the page
 
-    def outputDelete(self):
+    def outputDelete(self, result):
         pass
-        
 
 class Output(ft.UserControl):
-    def __init__(self, myoutput, mytext_input):
+    def __init__(self, myoutput, mytext_input, myoutput_delete):
         super().__init__()
         self.myoutput = myoutput 
         self.mytext_input = mytext_input
+        self.myoutput_delete = myoutput_delete
 
     def build(self):
 
         return ft.Column(
+            width=400,
             controls=[
                 ft.Container(ft.Text(value=self.mytext_input), bgcolor=ft.colors.BLUE_GREY_100, padding=10),
                 ft.Row(
@@ -78,7 +79,6 @@ class Output(ft.UserControl):
                 ),
             ],
         )
-
         
 
     def delete(self, e):
@@ -86,7 +86,6 @@ class Output(ft.UserControl):
 
 
 def main(page):
-    page.window_width=800
     page.scroll = True
     page.update()
     mychat = Chat() # create a new object
