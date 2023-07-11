@@ -9,7 +9,6 @@ from config import OPENAI_API_KEY
 # call the OpenAI API 
 openai.api_key = OPENAI_API_KEY
 
-
 class Chat(ft.UserControl):
 
     def build(self):
@@ -56,7 +55,9 @@ class Chat(ft.UserControl):
         self.update() # update the page
 
     def outputDelete(self, result):
-        pass
+        self.output_column.controls.remove(result)
+        self.update()
+
 
 class Output(ft.UserControl):
     def __init__(self, myoutput, mytext_input, myoutput_delete):
@@ -66,29 +67,25 @@ class Output(ft.UserControl):
         self.myoutput_delete = myoutput_delete
 
     def build(self):
-
-        return ft.Column(
-            width=400,
-            controls=[
-                ft.Container(ft.Text(value=self.mytext_input), bgcolor=ft.colors.BLUE_GREY_100, padding=10),
-                ft.Row(
-                    controls=[
-                        ft.Text(value=self.myoutput, selectable=True),
-                        ft.ElevatedButton("Delete", on_click=self.delete)
-                    ],
-                ),
-            ],
-        )
+        self.output_display = ft.Text(value=self.myoutput, selectable=True)
+        self.delete_button = ft.IconButton(ft.icons.DELETE_OUTLINE_SHARP, on_click=self.delete)
+        self.input_display = ft.Container(ft.Text(value=self.mytext_input), bgcolor=ft.colors.BLUE_GREY_100, padding=10)
         
 
+        self.display_view = ft.Column(controls=[self.input_display, self.output_display, self.delete_button])
+
+        return self.display_view
+
     def delete(self, e):
-        pass
+        self.myoutput_delete(self)
 
 
 def main(page):
     page.scroll = True
-    page.update()
+    page.window_width = 500
+    page.window_height = 700
     mychat = Chat() # create a new object
     page.add(mychat)# add application's root control to the page
+
 
 ft.app(target=main)
