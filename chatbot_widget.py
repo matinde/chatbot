@@ -42,7 +42,7 @@ class Chat(ft.UserControl):
                 model="gpt-3.5-turbo", 
                 messages=[
                     {"role": "system", "content": "You are useful assistant"},
-                    {"role": "user", "content": str(self.text_input)},
+                    {"role": "user", "content": self.text_input.value},
                 ]
             )
 
